@@ -1,0 +1,41 @@
+# 크롤링 결과 파일들
+*.csv
+
+# Python 관련
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 가상환경
+venv/
+env/
+ENV/
+
+# IDE 설정 파일들 (새로 추가!)
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS 관련
+.DS_Store
+Thumbs.db
