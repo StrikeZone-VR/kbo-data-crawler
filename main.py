@@ -126,7 +126,7 @@ def page_click(driver):
         driver.find_element(By.CSS_SELECTOR, '#cphContents_cphContents_cphContents_ucPager_btnNo1').click()
         df = pd.concat([df1, df2])
     else:
-        df1
+        df = df1
     return df
 
 # 메인 크롤링 로직 - 현재 시즌(2025)만 수집
