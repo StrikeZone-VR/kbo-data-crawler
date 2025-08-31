@@ -2,11 +2,9 @@
 
 KBO 공식 홈페이지에서 2025시즌 타자 기록을 자동으로 수집하는 Python 크롤링 도구입니다.
 
-
 [![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://python.org)
 [![Selenium](https://img.shields.io/badge/Selenium-4.11+-green.svg)](https://selenium.dev)
 [![License](https://img.shields.io/badge/License-Educational-orange.svg)](#license)
-
 
 ## 📊 주요 기능
 
@@ -15,7 +13,6 @@ KBO 공식 홈페이지에서 2025시즌 타자 기록을 자동으로 수집하
 - **🛡️ robots.txt 준수**: 웹사이트 크롤링 정책을 자동으로 확인하고 준수
 - **⏰ 서버 부하 방지**: 요청 간 2초 대기로 안전한 크롤링
 - **📈 데이터 분석**: 홈런왕 순위 등 간단한 분석 도구 포함
-
 
 ## ⚠️ 사용 시 주의사항
 
@@ -39,3 +36,25 @@ python homerun.py     # 홈런 분석
 ## 📄 라이선스
 
 개인 학습/연구 목적으로만 사용 가능합니다.
+
+## 🗄️ 데이터베이스 연동 (Postgres)
+
+이 프로젝트는 크롤링한 데이터를 Postgres에 저장하도록 설계되어 있습니다. 실행 전에 다음 환경 변수를 설정하세요:
+
+- `PGHOST` (기본: localhost)
+- `PGPORT` (기본: 5432)
+- `PGUSER`
+- `PGPASSWORD`
+- `PGDATABASE` (예: kbo)
+
+예시 (PowerShell):
+
+```powershell
+$env:PGHOST = 'localhost'
+$env:PGPORT = '5432'
+$env:PGUSER = 'postgres'
+$env:PGPASSWORD = 'yourpassword'
+$env:PGDATABASE = 'kbo'
+```
+
+`main.py` 실행 시 DB 연결이 가능하면 바로 DB에 저장하고, 실패하면 CSV로 백업합니다.

@@ -1,6 +1,12 @@
 # 크롤링 결과 파일들
 *.csv
 
+# dotenv
+.env
+
+# test_db_conn.py
+.test_db_conn.py
+
 # Python 관련
 __pycache__/
 *.py[cod]
