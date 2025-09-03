@@ -17,8 +17,13 @@ import re
 
 # Load environment variables from .env when present (local development convenience)
 from dotenv import load_dotenv
-from pathlib import Path
-load_dotenv(Path('.env'))
+import os.path
+
+# 현재 디렉토리의 절대 경로
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# .env 파일 절대 경로
+env_path = os.path.join(current_dir, '.env')
+load_dotenv(env_path)
 
 # optional app modules (present in repo)
 try:
@@ -53,15 +58,15 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 
 
 def check_robots_txt(url: str) -> bool:
-    """주어진 URL에 대해 robots.txt를 확인하고 크롤링 허용 여부를 반환합니다.
+    """주어진 URL에 대해 robots.txt를 확인하고 크롤링 허용 여부를 반환한다.
 
-    SSL 인증서 검증 오류가 발생하면 검증을 비활성화하고 robots.txt를 가져와 파싱합니다.
+    SSL 인증서 검증 오류가 발생하면 검증을 비활성화하고 robots.txt를 가져와 파싱한다.
     """
     try:
         parsed = urllib.parse.urlparse(url)
         robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
         print(f"🔍 웹 크롤링 허가 확인: {robots_url}")
-        print("   📖 robots.txt 파일을 읽어서 크롤링이 허용되는지 확인하고 있습니다...")
+        print("   📖 robots.txt 파일을 읽어서 크롤링이 허용되는지 확인하는 중...")
 
         rp = urllib.robotparser.RobotFileParser()
         rp.set_url(robots_url)
@@ -70,45 +75,45 @@ def check_robots_txt(url: str) -> bool:
         except Exception as e:
             # SSL 인증서 문제 등으로 rp.read()가 실패할 수 있음 -> 비검증으로 재시도
             try:
-                print(f"   ⚠️ robots.txt 읽기 중 SSL 오류 발생({e}), 인증서 검증을 비활성화하고 재시도합니다...")
+                print(f"   ⚠️ robots.txt 읽기 중 SSL 오류 발생({e}), 인증서 검증을 비활성화하고 재시도한다...")
                 data = urlreq.urlopen(robots_url, context=ssl._create_unverified_context(), timeout=10).read().decode('utf-8')
                 rp.parse(data.splitlines())
             except Exception as e2:
-                print(f"   ❌ robots.txt를 가져오지 못했습니다: {e2}")
+                print(f"   ❌ robots.txt를 가져오지 못함: {e2}")
                 raise
 
         can_fetch = rp.can_fetch("*", url)
         if can_fetch:
             print(f"✅ 크롤링 허가 확인 완료!")
         else:
-            print(f"❌ robots.txt가 이 URL의 크롤링을 금지합니다: {robots_url}")
+            print(f"❌ robots.txt가 이 URL의 크롤링을 금지한다: {robots_url}")
         return can_fetch
     except Exception as e:
         print(f"⚠️  robots.txt 확인 중 오류 발생: {e}")
-        print("   💭 인터넷 연결을 확인하거나 수동으로 robots.txt를 확인해 주세요.")
+        print("   💭 인터넷 연결을 확인하거나 수동으로 robots.txt를 확인해 볼 것")
         return False
 
 
-print("🤖 KBO 타자 기록 크롤러를 시작합니다!")
-print("📊 2025년 현재 시즌 모든 팀의 타자 기록을 수집합니다")
-print("🎯 교육/연구 목적으로만 사용됩니다")
+print("🤖 KBO 타자 기록 크롤러를 시작한다!")
+print("📊 2025년 현재 시즌 모든 팀의 타자 기록을 수집한다")
+print("🎯 교육/연구 목적으로만 사용")
 print("=" * 60)
 
 # 크롤링 대상 URL
 target_url = 'https://www.koreabaseball.com/Record/Player/HitterBasic/Basic1.aspx?sort=HRA_RT'
 
 print("\n🚨 1단계: 크롤링 허가 확인")
-print("   💡 웹사이트의 robots.txt를 확인해서 크롤링이 허용되는지 검사합니다")
+print("   💡 웹사이트의 robots.txt를 확인해서 크롤링이 허용되는지 검사한다")
 
 # 🚨 robots.txt 강제 확인
 if not check_robots_txt(target_url):
-    print("\n🛑 크롤링이 중단됩니다.")
+    print("\n🛑 크롤링 중단 중")
     print("📖 자세한 내용: https://www.koreabaseball.com/robots.txt")
     exit(1)  # 프로그램 강제 종료
 
 print("\n⏰ 2단계: 안전한 크롤링 설정")
-print("   🛡️  KBO 서버에 무리가 가지 않도록 요청 간격을 2초로 설정합니다")
-print("   🌐 정상적인 웹브라우저로 인식되도록 User-Agent를 설정합니다")
+print("   🛡️  KBO 서버에 무리가 가지 않도록 요청 간격을 2초로 설정한다")
+print("   🌐 정상적인 웹브라우저로 인식되도록 User-Agent를 설정한다")
 
 # 크롬 옵션 설정
 chrome_options = Options()
@@ -116,8 +121,16 @@ chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument(f"--user-agent={USER_AGENT}")
 
+# EC2나 서버 환경에서는 Headless 모드로 실행 (UI 없이 백그라운드 실행)
+is_headless = os.getenv('HEADLESS', 'False').lower() in ('true', '1', 't')
+if is_headless:
+    print("   🖥️ Headless 모드로 실행한다 (서버/EC2 환경용)")
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--window-size=1920,1080")
+
 print("\n🚀 3단계: 크롬 브라우저 실행")
-print("   💻 자동화된 크롬 브라우저를 실행합니다...")
+print("   💻 자동화된 크롬 브라우저를 실행한다...")
 
 # 크롬드라이버 실행 - ChromeDriverManager를 사용, 로컬 Chrome 버전에서 major 추출해 시도
 chromedriver_path_env = os.getenv('CHROMEDRIVER_PATH')
@@ -147,7 +160,7 @@ except Exception as e_wdm:
             print("   ✅ CHROMEDRIVER_PATH에 있는 드라이버로 실행 성공")
         except Exception as e_env:
             print(f"   ❌ CHROMEDRIVER_PATH 드라이버 실행 실패: {e_env}")
-            raise RuntimeError("chromedriver 실행에 실패했습니다. CHROMEDRIVER_PATH를 확인하세요.")
+            raise RuntimeError("chromedriver 실행 실패. CHROMEDRIVER_PATH를 확인할 것.")
     else:
         # 시도: 로컬 chrome 실행파일에서 버전 추출하고 major로 설치 시도
         chrome_candidates = [
@@ -179,16 +192,16 @@ except Exception as e_wdm:
                 print("   ✅ webdriver-manager(major)로 드라이버 설치/실행 성공")
             except Exception as e_major:
                 print(f"   ⚠️ webdriver-manager(major) 실패: {e_major}")
-                raise RuntimeError("chromedriver를 찾을 수 없습니다. chromedriver를 설치하거나 CHROMEDRIVER_PATH를 설정하세요.")
+                raise RuntimeError("chromedriver를 찾을 수 없음. chromedriver를 설치하거나 CHROMEDRIVER_PATH를 설정할 것.")
         else:
-            raise RuntimeError("chromedriver를 찾을 수 없습니다. chromedriver를 설치하거나 CHROMEDRIVER_PATH를 설정하세요.")
+            raise RuntimeError("chromedriver를 찾을 수 없음. chromedriver를 설치하거나 CHROMEDRIVER_PATH를 설정할 것.")
 
 driver.implicitly_wait(10)
 
 wait = WebDriverWait(driver, 10)
 
-print("   ✅ 크롬 브라우저가 성공적으로 실행되었습니다!")
-print("   💡 Chrome DevTools 메시지는 정상적인 브라우저 실행 로그입니다 (무시하셔도 됩니다)")
+print("   ✅ 크롬 브라우저가 성공적으로 실행됨!")
+print("   💡 Chrome DevTools 메시지는 정상적인 브라우저 실행 로그이다 (무시해도 됨)")
 
 print(f"\n🌐 4단계: KBO 공식 홈페이지 접속")
 print(f"   🔗 접속 중: {target_url}")
@@ -196,15 +209,15 @@ print(f"   🔗 접속 중: {target_url}")
 # robots.txt 확인 통과 후에만 접속
 driver.get(target_url)
 
-# 일부 사이트는 접속 직후 동의/쿠키/팝업 창이 떠서 자동화가 멈춥니다.
-# 자주 등장하는 알럿과 동의 버튼을 자동으로 닫아 진행을 돕습니다.
+# 일부 사이트는 접속 직후 동의/쿠키/팝업 창이 떠서 자동화가 멈춤.
+# 자주 등장하는 알람과 동의 버튼을 자동으로 닫아 진행을 도움.
 try:
     # 짧게 대기 후 JS alert가 있는지 확인
     time.sleep(0.8)
     alert = driver.switch_to.alert
     alert_text = alert.text if hasattr(alert, 'text') else ''
     alert.accept()
-    print(f"   ✅ 페이지의 JS alert를 수락했습니다: {alert_text}")
+    print(f"   ✅ 페이지의 JS alert를 수락함: {alert_text}")
 except Exception:
     # 알럿이 없으면 무시
     pass
@@ -223,20 +236,15 @@ for xp in popup_xpaths:
     try:
         el = driver.find_element(By.XPATH, xp)
         el.click()
-        print(f"   ✅ 팝업 버튼을 클릭했습니다 (XPath): {xp}")
+        print(f"   ✅ 팝업 버튼을 클릭함 (XPath): {xp}")
         time.sleep(0.6)
         break
     except Exception:
         continue
 
-# 디버깅용 스크린샷 저장
-try:
-    driver.save_screenshot('kbo_page_after_popup.png')
-    print("   📸 팝업 처리 후 스크린샷 저장: kbo_page_after_popup.png")
-except Exception:
-    pass
+# 디버깅용 스크린샷 기능 제거됨
 
-print("   ✅ KBO 타자 기록 페이지에 성공적으로 접속했습니다!")
+print("   ✅ KBO 타자 기록 페이지에 성공적으로 접속!")
 
 # 🛡️ 안전한 대기 함수
 def safe_sleep():
@@ -263,7 +271,7 @@ def page_click(driver):
     df1 = create_table(driver)
     page_count = len(driver.find_elements(By.CSS_SELECTOR, '#cphContents_cphContents_cphContents_udpContent > div.record_result > div > a'))
     if page_count > 1:
-        print("     📄 2페이지가 있어서 추가로 수집합니다...")
+        print("     📄 2페이지가 있어서 추가로 수집한다...")
         driver.find_element(By.CSS_SELECTOR, '#cphContents_cphContents_cphContents_ucPager_btnNo2').click()
         df2 = create_table(driver)
         safe_sleep()
@@ -280,7 +288,7 @@ current_season = "2025"  # 🎯 현재 시즌만!
 print(f"\n📅 5단계: 데이터 수집 시작")
 print(f"   🎯 수집 대상: {current_season}시즌 KBO 전체 팀 타자 기록")
 
-print(f"\n🗓️  {current_season}시즌 데이터 수집을 시작합니다...")
+print(f"\n🗓️  {current_season}시즌 데이터 수집을 시작한다...")
 safe_sleep()
 
 # 시즌 선택
@@ -291,7 +299,7 @@ teams = team_list(driver)
 
 print(f"⚾ 발견된 팀 목록: {len(teams)}개")
 print(f"   📋 {', '.join(teams)}")
-print(f"\n🔄 각 팀별로 선수 기록을 차례대로 수집합니다...")
+print(f"\n🔄 각 팀별로 선수 기록을 차례대로 수집한다...")
 
 for team_idx, team in enumerate(teams, 1):
     print(f"\n   🏟️  [{team_idx:2d}/{len(teams)}] {team} 팀 선수 기록 수집 중...")
@@ -312,7 +320,7 @@ print(f"\n📊 6단계: 수집 결과 정리 및 저장")
 if dfs:
     result = pd.concat(dfs, ignore_index=True)
     print(f"✅ 데이터 수집 성공!")
-    print(f"   📈 총 {len(result)}명의 선수 기록을 수집했습니다 ({current_season}시즌)")
+    print(f"   📈 총 {len(result)}명의 선수 기록을 수집 완료 ({current_season}시즌)")
 
     try:
         print(f"\n📋 수집된 데이터 미리보기 (상위 10명):")
@@ -325,11 +333,11 @@ if dfs:
     result.to_csv(filename, index=False, encoding='utf-8-sig')
     print(f"\n💾 파일 저장 완료!")
     print(f"   📁 저장 위치: {filename}")
-    print(f"   📊 엑셀에서도 열어볼 수 있습니다!")
+    print(f"   📊 엑셀에서도 열어볼 수 있음!")
     # DB 저장 시도: 환경 변수로 Postgres가 설정되어 있으면 자동으로 업서트
     if df_to_hitters_table and get_conn:
         try:
-            print('\n🔁 DB 연결을 시도합니다...')
+            print('\n🔁 DB 연결 시도 중...')
             conn = get_conn()
             try:
                 create_tables(conn)
@@ -344,7 +352,7 @@ if dfs:
                 print(f"   ✅ DB: hitters 테이블에 {n}건 저장(업서트) 완료")
             except Exception as e:
                 print('   ⚠️ DB에 hitters 저장 실패:', e)
-                print('   💾 CSV가 이미 저장되어 있으므로 수동 업로드를 진행하세요.')
+                print('   💾 CSV가 이미 저장되어 있으므로 수동 업로드 진행할 것.')
 
             # 투수/팀 데이터는 crawler 모듈의 함수로 수집하여 저장
             if collect_pitchers_season:
@@ -367,14 +375,14 @@ if dfs:
 
         except Exception as e_conn:
             print('   ⚠️ DB 연결 실패:', e_conn)
-            print('   💾 CSV 파일이 보존되어 있으니 파일을 DB에 수동으로 임포트하세요.')
-    
-else:
-    print('❌ 오류: 데이터가 수집되지 않았습니다.')
-    print('   💭 인터넷 연결이나 KBO 홈페이지 상태를 확인해 주세요.')
+            print('   💾 CSV 파일이 보존되어 있으니 파일을 DB에 수동으로 임포트할 것')
 
-print(f"\n🏁 크롤링이 완료되었습니다!")
-print(f"   🤖 크롬 브라우저를 자동으로 종료합니다...")
+else:
+    print('❌ 오류: 데이터가 수집되지 않았음.')
+    print('   💭 인터넷 연결이나 KBO 홈페이지 상태를 확인해볼 것')
+
+print(f"\n🏁 크롤링 완료!")
+print(f"   🤖 크롬 브라우저를 자동으로 종료 중...")
 driver.quit()
-print(f"   ✅ 모든 작업이 성공적으로 완료되었습니다!")
-print(f"   🎉 {current_season}시즌 KBO 타자 기록을 성공적으로 수집했습니다!")
+print(f"   ✅ 모든 작업이 성공적으로 완료됨!")
+print(f"   🎉 {current_season}시즌 KBO 타자 기록을 성공적으로 수집함!")

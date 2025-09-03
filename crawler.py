@@ -1,6 +1,6 @@
 """crawler.py
-KBO 웹사이트에서 현재 시즌의 타자 기록을 수집하는 함수들을 모아둔 모듈입니다.
-함수 반환값은 pandas.DataFrame 형태입니다.
+KBO 웹사이트에서 현재 시즌의 타자 기록을 수집하는 함수들을 모아둔 모듈이다.
+함수 반환값은 pandas.DataFrame 형태이다.
 """
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -28,7 +28,7 @@ def get_team_list(driver, sleep_fn):
 
 
 def collect_current_season(driver, season, sleep_fn):
-    """현재 시즌(season 문자열, 예: '2025')의 모든 팀 타자 데이터를 수집하여 하나의 DataFrame으로 반환합니다."""
+    """현재 시즌(season 문자열, 예: '2025')의 모든 팀 타자 데이터를 수집하여 하나의 DataFrame으로 반환한다."""
     # 시즌 선택
     season_combo = driver.find_element(By.CSS_SELECTOR, '#cphContents_cphContents_cphContents_ddlSeason_ddlSeason')
     season_combo = Select(season_combo)
@@ -63,7 +63,7 @@ def collect_current_season(driver, season, sleep_fn):
 
 
 def collect_pitchers_season(driver, season, sleep_fn):
-    """현재 시즌의 투수 기록을 수집하여 DataFrame으로 반환합니다."""
+    """현재 시즌의 투수 기록을 수집하여 DataFrame으로 반환한다."""
     # 페이지로 이동(투수 기본 기록 페이지로 추정 경로)
     target = 'https://www.koreabaseball.com/Record/Player/PitcherBasic/Basic1.aspx'
     driver.get(target)
@@ -108,7 +108,7 @@ def collect_pitchers_season(driver, season, sleep_fn):
 
 
 def collect_team_rankings_season(driver, season, sleep_fn):
-    """현재 시즌 팀 순위를 수집하여 DataFrame으로 반환합니다."""
+    """현재 시즌 팀 순위를 수집하여 DataFrame으로 반환한다."""
     # 팀 순위(일별) 페이지로 이동 — KBO 사이트의 최신 경로
     target = 'https://www.koreabaseball.com/Record/TeamRank/TeamRankDaily.aspx'
     driver.get(target)

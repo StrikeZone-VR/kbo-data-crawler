@@ -3,7 +3,7 @@
 
 # dotenv
 .env
-
+.github/
 # test_db_conn.py
 .test_db_conn.py
 
