@@ -4,8 +4,15 @@ KBO 공식 홈페이지에서 타자, 투수, 팀 순위 데이터를 자동으�
 
 [![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://python.org)
 [![Selenium](https://img.shields.io/badge/Selenium-4.11+-green.svg)](https://selenium.dev)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13.0+-blue.svg)](https://www.postgresql.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17.0+-blue.svg)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/License-MIT-orange.svg)](#license)
+
+<br>
+
+## 📊 크롤링 데이터 DB 조회 [EC2 ↔ RDS]
+<img width="1031" height="422" alt="image" src="https://github.com/user-attachments/assets/bc9b9c56-d5a5-4eab-863a-2545622620b8" />
+
+<br>
 
 ## 📊 주요 기능
 
