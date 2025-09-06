@@ -15,6 +15,8 @@ KBO 공식 홈페이지에서 타자, 투수, 팀 순위 데이터를 자동으�
 - **🛡️ 크롤링 보안 준수**: robots.txt 준수 및 요청 간 적절한 지연 시간 적용
 - **💻 AWS EC2 배포 확장**: EC2/RDS 환경에서 쉽게 실행 가능한 설정 스크립트 포함
 
+<br>
+
 ## 🚀 빠른 시작
 
 ### 환경 설정
@@ -41,6 +43,8 @@ python test_db_conn.py
 python main.py
 ```
 
+<br>
+
 ## 🏗️ 프로젝트 구조
 
 ```
@@ -51,6 +55,8 @@ python main.py
 ├── requirements.txt # 필요한 Python패키지 목록
 └── setup_ec2.sh    # EC2 배포용 설정 스크립트
 ```
+
+<br>
 
 ## 🖥️ EC2/RDS 배포 가이드
 
@@ -87,6 +93,8 @@ DB_PORT=5432
 crontab -l
 ```
 
+<br>
+
 ## ⚠️ 주의 사항
 
 `setup_ec2.sh` 스크립트는 Python과 Git이 사전에 설치되어 있다고 가정한다.  
@@ -103,6 +111,8 @@ sudo apt-get install -y python3 python-is-python3
 
 설치 후, `setup_ec2.sh` 스크립트를 실행
 
+<br>
+
 ## 📋 데이터 스키마
 
 크롤링된 데이터는 다음 세 개의 테이블로 저장된다:
@@ -112,3 +122,9 @@ sudo apt-get install -y python3 python-is-python3
 3. **team_rankings** - 팀 순위 정보
 
 각 테이블은 복합 키(player_name, team, year 또는 team, year)를 사용하여 중복을 방지한다.
+
+<br>
+
+## 🔗 추가 자료
+
+AWS RDS 연결 가이드에 대한 자세한 내용은 [RDS_Connection.md](./RDS_Connection.md) 파일을 참고
