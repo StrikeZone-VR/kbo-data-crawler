@@ -14,6 +14,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import subprocess
 import re
+from datetime import datetime
 
 # Load environment variables from .env when present (local development convenience)
 from dotenv import load_dotenv
@@ -329,11 +330,6 @@ if dfs:
     except Exception:
         print(result.head(10))
 
-    filename = f'kbo_hitters_{current_season}.csv'
-    result.to_csv(filename, index=False, encoding='utf-8-sig')
-    print(f"\n💾 파일 저장 완료!")
-    print(f"   📁 저장 위치: {filename}")
-    print(f"   📊 엑셀에서도 열어볼 수 있음!")
     # DB 저장 시도: 환경 변수로 Postgres가 설정되어 있으면 자동으로 업서트
     if df_to_hitters_table and get_conn:
         try:
@@ -352,7 +348,6 @@ if dfs:
                 print(f"   ✅ DB: hitters 테이블에 {n}건 저장(업서트) 완료")
             except Exception as e:
                 print('   ⚠️ DB에 hitters 저장 실패:', e)
-                print('   💾 CSV가 이미 저장되어 있으므로 수동 업로드 진행할 것.')
 
             # 투수/팀 데이터는 crawler 모듈의 함수로 수집하여 저장
             if collect_pitchers_season:
@@ -375,7 +370,6 @@ if dfs:
 
         except Exception as e_conn:
             print('   ⚠️ DB 연결 실패:', e_conn)
-            print('   💾 CSV 파일이 보존되어 있으니 파일을 DB에 수동으로 임포트할 것')
 
 else:
     print('❌ 오류: 데이터가 수집되지 않았음.')
@@ -386,3 +380,19 @@ print(f"   🤖 크롬 브라우저를 자동으로 종료 중...")
 driver.quit()
 print(f"   ✅ 모든 작업이 성공적으로 완료됨!")
 print(f"   🎉 {current_season}시즌 KBO 타자 기록을 성공적으로 수집함!")
+
+def log_crawling_result(result: str):
+    """크롤링 결과를 로그 파일에 기록."""
+    log_file = "crawler.log"
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = f"[{timestamp}] {result}\n"
+
+    with open(log_file, "a") as f:
+        f.write(log_entry)
+
+if __name__ == "__main__":
+    try:
+        log_crawling_result("크롤링 성공")
+    except Exception as e:
+        log_crawling_result(f"크롤링 실패: {e}")
+        raise
