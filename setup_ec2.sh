@@ -73,11 +73,11 @@ CHROMEDRIVER_PATH=$PROJECT_DIR/drivers/chromedriver
 HEADLESS=True
 
 # AWS RDS 설정 - 아래 값들을 실제 RDS 정보로 변경할 것
-DB_HOST=your-rds-endpoint.rds.amazonaws.com
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=your-secure-password
-DB_NAME=StrikeZone_VR
+PGHOST=your-rds-endpoint.rds.amazonaws.com
+PGPORT=5432
+PGUSER=postgres
+PGPASSWORD=your-secure-password
+PGDATABASE=StrikeZone_VR
 EOF
 echo "   ... .env 파일 생성 완료!"
 
