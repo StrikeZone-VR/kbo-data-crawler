@@ -133,6 +133,6 @@ sudo apt-get install -y python3 python-is-python3
 
 로컬 개발 환경(DBeaver, pgAdmin 등)에서 VPC 내의 Private RDS 인스턴스로 안전하게 연결하기 위한 상세한 기술 가이드는 아래의 별도 문서를 참조한다.  
 
-* **[가이드 문서: Private RDS 연결 구성 방법 (SSH 터널링)]([./rdsConnection.md](https://github.com/StrikeZone-VR/kbo-data-crawler/blob/main/RDS_Connnection.md))**  
+* **[가이드 문서: Private RDS 연결 구성 방법 (SSH 터널링)](https://github.com/StrikeZone-VR/kbo-data-crawler/blob/main/RDS_Connnection.md)**  
 
 
