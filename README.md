@@ -87,6 +87,22 @@ DB_PORT=5432
 crontab -l
 ```
 
+## ⚠️ 주의 사항
+
+`setup_ec2.sh` 스크립트는 Python과 Git이 사전에 설치되어 있다고 가정한다.  
+따라서, EC2 인스턴스에 Python과 Git이 설치되어 있지 않다면, 아래 명령어를 사용하여 수동으로 설치해야 한다:
+
+```bash
+# Git 설치
+sudo apt-get update
+sudo apt-get install -y git
+
+# Python 설치
+sudo apt-get install -y python3 python-is-python3
+```
+
+설치 후, `setup_ec2.sh` 스크립트를 실행
+
 ## 📋 데이터 스키마
 
 크롤링된 데이터는 다음 세 개의 테이블로 저장된다:
