@@ -41,14 +41,17 @@ EC2 인스턴스가 안전한 게이트웨이, 즉 '중계 서버(Jump Host)' �
     하단 이미지처럼 `+SSH, SSL, ...` 버튼을 클릭하고 SSH을 선택한다.
     그럼 새롭게 SSH 탭이 추가된다.
 
-    ![alt text](image.png)
+    <img width="620" height="581" alt="image" src="https://github.com/user-attachments/assets/e4455a40-aa98-4eee-98b2-1a93b04a2860" />
+
 
 3.  **SSH 탭 설정**:
     - **[SSH]** 탭을 클릭한다.
     - **Host/IP**: EC2 인스턴스의 **퍼블릭 IP 주소**를 입력한다.
     - **User Name**: EC2 접속 사용자 이름(예: `ubuntu`)을 입력한다.
-    - **Authentication Method**: **"Public Key"**를 선택한다.
+    - **Authentication Method**: **Public Key**를 선택한다.
     - **Private Key**: "찾아보기"를 클릭하여 해당 EC2 접속용 `.pem` 키 파일을 선택한다.
+
+<br>
 
 #### 자, 이러면 로컬 클라이언트인 DBeaver와 EC2간의 연결은 성공한 것이다!
 
