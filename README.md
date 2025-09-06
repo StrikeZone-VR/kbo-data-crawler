@@ -125,6 +125,14 @@ sudo apt-get install -y python3 python-is-python3
 
 <br>
 
-## 🔗 추가 자료
+## 📖 부록: Private AWS RDS 연결 구성
 
-AWS RDS 연결 가이드에 대한 자세한 내용은 [RDS_Connection.md](./RDS_Connection.md) 파일을 참고
+본 프로젝트는 AWS 프리티어 환경에서의 비용 효율성을 고려하여 RDS 데이터베이스의 퍼블릭 액세스를 비활성화하는 것을 표준 구성으로 채택하였다.   
+
+이로 인해 외부 호스트에서의 직접적인 데이터베이스 접근이 제한된다.  
+
+로컬 개발 환경(DBeaver, pgAdmin 등)에서 VPC 내의 Private RDS 인스턴스로 안전하게 연결하기 위한 상세한 기술 가이드는 아래의 별도 문서를 참조한다.  
+
+* **[가이드 문서: Private RDS 연결 구성 방법 (SSH 터널링)](./rdsConnection.md)**  
+
+
